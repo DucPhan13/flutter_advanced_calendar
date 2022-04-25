@@ -19,8 +19,7 @@ class ViewRange {
     int? startWeekDay,
   }) {
     final firstMonthDate = DateTime.utc(date.year, month, 1);
-    final firstViewDate =
-        firstMonthDate.firstDayOfWeek(startWeekDay: startWeekDay);
+    final firstViewDate = firstMonthDate.firstDayOfWeek(startWeekDay: startWeekDay);
 
     return ViewRange._(
       firstMonthDate,

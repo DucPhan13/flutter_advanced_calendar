@@ -11,6 +11,8 @@ class MonthView extends StatelessWidget {
     required this.innerDot,
     this.onChanged,
     this.events,
+    this.dateStyle,
+    this.datePressedStyle,
   }) : super(key: key);
 
   final ViewRange monthView;
@@ -20,6 +22,8 @@ class MonthView extends StatelessWidget {
   final int weeksAmount;
   final ValueChanged<DateTime>? onChanged;
   final List<DateTime>? events;
+  final TextStyle? dateStyle;
+  final TextStyle? datePressedStyle;
   final bool innerDot;
 
   @override
@@ -46,6 +50,8 @@ class MonthView extends StatelessWidget {
               lineHeight: weekLineHeight,
               onChanged: onChanged,
               events: events,
+              dateStyle: dateStyle,
+              datePressedStyle: datePressedStyle,
             );
           },
           growable: false,

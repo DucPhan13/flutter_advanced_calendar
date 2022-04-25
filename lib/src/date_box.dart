@@ -8,7 +8,7 @@ class DateBox extends StatelessWidget {
     this.color,
     this.width = 24.0,
     this.height = 24.0,
-    this.borderRadius = const BorderRadius.all(Radius.circular(8.0)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(45.0)),
     this.onPressed,
     this.showDot = false,
     this.isSelected = false,
@@ -63,7 +63,7 @@ class DateBox extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected
-                ? theme.primaryColor
+                ? theme.colorScheme.secondary
                 : isToday
                     ? theme.highlightColor
                     : null,
@@ -86,9 +86,7 @@ class DateBox extends StatelessWidget {
                       width: 4,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isSelected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.secondary,
+                        color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.secondary,
                       ),
                     ),
                   ),

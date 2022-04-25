@@ -9,6 +9,8 @@ class WeekView extends StatelessWidget {
     this.highlightMonth,
     this.onChanged,
     this.events,
+    this.dateStyle = const TextStyle(color: Colors.blue, fontWeight: FontWeight.w400),
+    this.datePressedStyle = const TextStyle(color: Colors.blue, fontWeight: FontWeight.w400),
     required this.innerDot,
   }) : super(key: key);
 
@@ -19,6 +21,8 @@ class WeekView extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime>? onChanged;
   final List<DateTime>? events;
+  final TextStyle? dateStyle;
+  final TextStyle? datePressedStyle;
   final bool innerDot;
 
   @override
@@ -38,15 +42,14 @@ class WeekView extends StatelessWidget {
             final isSelected = date.isAtSameMomentAs(selectedDate);
             final isHighlight = highlightMonth == date.month;
 
-            final containsToday =
-                events!.indexWhere((element) => element.isSameDate(date));
+            final containsToday = events!.indexWhere((element) => element.isSameDate(date));
 
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 DateBox(
-                  width: innerDot ? 32 : 24,
-                  height: innerDot ? 32 : 24,
+                  width: innerDot ? 32 : 32,
+                  height: innerDot ? 32 : 32,
                   showDot: innerDot,
                   onPressed: onChanged != null ? () => onChanged!(date) : null,
                   isSelected: isSelected,
@@ -62,6 +65,14 @@ class WeekView extends StatelessWidget {
                               : theme.disabledColor,
                     ),
                   ),
+                  // child: Text(
+                  //   '${date.day}',
+                  //   style: isSelected
+                  //       ? datePressedStyle
+                  //       : isHighlight
+                  //           ? null
+                  //           : dateStyle,
+                  // ),
                 ),
                 if (!innerDot)
                   Column(
