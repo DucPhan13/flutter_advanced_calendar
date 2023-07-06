@@ -47,6 +47,7 @@ class WeekView extends StatelessWidget {
             final isHighlight = highlightMonth == date.month;
 
             final containsToday = events!.indexWhere((element) => element.isSameDate(date));
+            final hasEvent = events!.indexWhere((element) => element.isSameDate(date));
 
             if (keepLineSize) {
               return InkResponse(
@@ -107,7 +108,7 @@ class WeekView extends StatelessWidget {
                   onPressed: onChanged != null ? () => onChanged!(date) : null,
                   isSelected: isSelected,
                   isToday: isToday,
-                  hasEvent: !hasEvent.isNegative,
+                  hasEvent: !containsToday.isNegative,
                   child: Text(
                     '${date.day}',
                     maxLines: 1,

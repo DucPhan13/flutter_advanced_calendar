@@ -69,6 +69,9 @@ class AdvancedCalendar extends StatefulWidget {
   /// The first day of the week starts[0-6]
   final int? startWeekDay;
 
+  /// Style of date
+  final TextStyle? dateStyle;
+
   /// Style of headers date
   final TextStyle? headerStyle;
 
@@ -218,11 +221,8 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.hintColor,
                   ),
-                  weekNames: _weekNames != null ? _weekNames! : const <String>['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                   keepLineSize: widget.keepLineSize,
-                  weekNames: _weekNames != null
-                      ? _weekNames!
-                      : const <String>['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                  weekNames: _weekNames != null ? _weekNames! : const <String>['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                 ),
                 AnimatedBuilder(
                   animation: _animationController,
@@ -304,7 +304,7 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                                             },
                                             controller: _weekPageController,
                                             itemCount: _weekRangeList.length,
-                                            physics: _closeMonthScroll(),
+                                            physics: closeMonthScroll(),
                                             itemBuilder: (context, index) {
                                               return WeekView(
                                                 innerDot: widget.innerDot,
