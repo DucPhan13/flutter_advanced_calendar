@@ -12,6 +12,8 @@ class WeekView extends StatelessWidget {
     this.dateStyle = const TextStyle(color: Colors.blue, fontWeight: FontWeight.w400),
     this.datePressedStyle = const TextStyle(color: Colors.blue, fontWeight: FontWeight.w400),
     required this.innerDot,
+    required this.keepLineSize,
+    this.textStyle,
   }) : super(key: key);
 
   final DateTime todayDate = DateTime.now().toZeroTime();
@@ -24,6 +26,8 @@ class WeekView extends StatelessWidget {
   final TextStyle? dateStyle;
   final TextStyle? datePressedStyle;
   final bool innerDot;
+  final bool keepLineSize;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,55 @@ class WeekView extends StatelessWidget {
 
             final containsToday = events!.indexWhere((element) => element.isSameDate(date));
 
+            if (keepLineSize) {
+              return InkResponse(
+                onTap: onChanged != null ? () => onChanged!(date) : null,
+                child: Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? theme.primaryColor
+                        : isToday
+                            ? theme.highlightColor
+                            : null,
+                    borderRadius: BorderRadius.circular(12),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${date.day}',
+                        style: textStyle?.copyWith(
+                          color: isSelected || isToday
+                              ? theme.colorScheme.onPrimary
+                              : isHighlight || highlightMonth == null
+                                  ? null
+                                  : theme.disabledColor,
+                          fontWeight:
+                              isSelected && textStyle?.fontWeight != null
+                                  ? FontWeight
+                                      .values[textStyle!.fontWeight!.index + 2]
+                                  : textStyle?.fontWeight,
+                        ),
+                      ),
+                      if (!hasEvent.isNegative)
+                        Container(
+                          height: 4,
+                          width: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: isSelected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.secondary,
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              );
+            }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -54,13 +107,14 @@ class WeekView extends StatelessWidget {
                   onPressed: onChanged != null ? () => onChanged!(date) : null,
                   isSelected: isSelected,
                   isToday: isToday,
-                  hasEvent: containsToday != -1,
+                  hasEvent: !hasEvent.isNegative,
                   child: Text(
                     '${date.day}',
+                    maxLines: 1,
                     style: TextStyle(
                       color: isSelected || isToday
                           ? theme.colorScheme.onPrimary
-                          : isHighlight
+                          : isHighlight || highlightMonth == null
                               ? null
                               : theme.disabledColor,
                     ),
@@ -74,20 +128,13 @@ class WeekView extends StatelessWidget {
                   //           : dateStyle,
                   // ),
                 ),
-                if (!innerDot)
-                  Column(
-                    children: List<Widget>.generate(
-                      events != null ? events!.length : 0,
-                      (index) => events![index].isSameDate(date)
-                          ? Container(
-                              height: 6,
-                              width: 6,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: theme.primaryColor,
-                              ),
-                            )
-                          : const SizedBox(),
+                if (!innerDot && !hasEvent.isNegative)
+                  Container(
+                    height: 6,
+                    width: 6,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: theme.primaryColor,
                     ),
                   )
               ],

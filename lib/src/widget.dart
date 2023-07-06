@@ -28,10 +28,19 @@ class AdvancedCalendar extends StatefulWidget {
     this.dateBoxStyle,
     this.datePressedBoxStyle,
     this.weekNames,
+    this.headerStyle,
     this.onHorizontalDrag,
     this.onDatePressed,
     this.innerDot = false,
-  }) : super(key: key);
+    this.keepLineSize = false,
+    this.calendarTextStyle,
+  })  : assert(
+          keepLineSize && innerDot ||
+              innerDot && !keepLineSize ||
+              !innerDot && !keepLineSize,
+          'keepLineSize should be used only when innerDot is true',
+        ),
+        super(key: key);
 
   /// Calendar selection date controller.
   final AdvancedCalendarController? controller;
@@ -60,8 +69,8 @@ class AdvancedCalendar extends StatefulWidget {
   /// The first day of the week starts[0-6]
   final int? startWeekDay;
 
-  /// Style of date
-  final TextStyle? dateStyle;
+  /// Style of headers date
+  final TextStyle? headerStyle;
 
   /// Style of date box
   final TextStyle? dateBoxStyle;
@@ -77,6 +86,13 @@ class AdvancedCalendar extends StatefulWidget {
 
   /// Show DateBox event in container.
   final bool innerDot;
+
+  /// Keeps consistent line size for dates
+  /// Can't be used without innerDot
+  final bool keepLineSize;
+
+  /// Text style for dates in calendar
+  final TextStyle? calendarTextStyle;
 
   @override
   _AdvancedCalendarState createState() => _AdvancedCalendarState();
@@ -166,8 +182,8 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
     final theme = Theme.of(context);
     return Material(
       color: Colors.transparent,
-      child: DefaultTextStyle(
-        style: theme.textTheme.bodyText2!,
+      child: DefaultTextStyle.merge(
+        style: theme.textTheme.bodyMedium,
         child: GestureDetector(
           onVerticalDragStart: (details) {
             _captureOffset = details.globalPosition;
@@ -193,16 +209,20 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                     return Header(
                       monthDate: _monthRangeList[_monthViewCurrentPage.value].firstDay,
                       onPressed: _handleTodayPressed,
-                      dateStyle: widget.dateStyle,
+                      dateStyle: widget.headerStyle,
                       todayStyle: widget.todayStyle,
                     );
                   },
                 ),
                 WeekDays(
-                  style: theme.textTheme.bodyText1!.copyWith(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.hintColor,
                   ),
                   weekNames: _weekNames != null ? _weekNames! : const <String>['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                  keepLineSize: widget.keepLineSize,
+                  weekNames: _weekNames != null
+                      ? _weekNames!
+                      : const <String>['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                 ),
                 AnimatedBuilder(
                   animation: _animationController,
@@ -248,6 +268,8 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                                         events: widget.events,
                                         dateStyle: widget.dateBoxStyle,
                                         datePressedStyle: widget.datePressedBoxStyle,
+                                        keepLineSize: widget.keepLineSize,
+                                        textStyle: widget.calendarTextStyle,
                                       );
                                     },
                                   ),
@@ -282,7 +304,7 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                                             },
                                             controller: _weekPageController,
                                             itemCount: _weekRangeList.length,
-                                            physics: closeMonthScroll(),
+                                            physics: _closeMonthScroll(),
                                             itemBuilder: (context, index) {
                                               return WeekView(
                                                 innerDot: widget.innerDot,
@@ -293,6 +315,10 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
                                                 events: widget.events,
                                                 dateStyle: widget.dateBoxStyle,
                                                 datePressedStyle: widget.datePressedBoxStyle,
+                                                keepLineSize:
+                                                    widget.keepLineSize,
+                                                textStyle:
+                                                    widget.calendarTextStyle,
                                               );
                                             },
                                           ),
@@ -321,6 +347,19 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _monthPageController!.dispose();
+    _monthViewCurrentPage.dispose();
+
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+
+    super.dispose();
   }
 
   void _handleWeekDateChanged(DateTime date) {
@@ -360,18 +399,5 @@ class _AdvancedCalendarState extends State<AdvancedCalendar> with SingleTickerPr
     } else {
       return const AlwaysScrollableScrollPhysics();
     }
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _monthPageController!.dispose();
-    _monthViewCurrentPage.dispose();
-
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-
-    super.dispose();
   }
 }
