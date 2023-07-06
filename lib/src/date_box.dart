@@ -69,13 +69,10 @@ class DateBox extends StatelessWidget {
                     : null,
             borderRadius: borderRadius,
           ),
-          child: Stack(
-            fit: StackFit.expand,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: child,
-              ),
+              child,
               if (showDot && hasEvent)
                 Positioned.fill(
                   child: Align(
